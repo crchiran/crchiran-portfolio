@@ -2,6 +2,7 @@ FROM nginxinc/nginx-unprivileged:1.29-alpine
 
 COPY --chown=101:101 nginx.conf /etc/nginx/conf.d/default.conf
 COPY --chown=101:101 crchiran-portfolio.html /usr/share/nginx/html/index.html
+COPY --chown=101:101 images /usr/share/nginx/html/images
 
 EXPOSE 8080
 

@@ -1,33 +1,75 @@
-# Portfolio - GitHub Actions, GHCR, FluxCD and Kubernetes GitOps Demo
+# Portfolio Website - Kubernetes CI/CD & GitOps Platform
 
-This repository demonstrates a complete modern CI/CD and GitOps deployment workflow using:
+A production-inspired portfolio website demonstrating modern application delivery using:
 
 * Docker
 * GitHub Actions
 * GitHub Container Registry (GHCR)
+* Trivy Security Scanning
 * FluxCD
 * Kubernetes
 * GitOps
 
-The purpose of this project is educational and practical: to show how a simple application can be containerized, automatically built, stored in a container registry, deployed through a GitOps repository, and synchronized into Kubernetes using FluxCD.
+This repository contains the application source code and CI/CD pipeline used to build, scan, publish, and deploy the portfolio website into Kubernetes through a GitOps workflow.
 
 ---
 
-# Learning Objectives
+## Project Overview
 
-By following this project, you will learn how to:
+The goal of this project is to demonstrate a complete end-to-end cloud-native deployment workflow.
 
-* Containerize an application using Docker
-* Build and publish images automatically using GitHub Actions
-* Store container images in GitHub Container Registry (GHCR)
-* Implement GitOps deployment practices
-* Deploy applications with FluxCD
-* Manage Kubernetes manifests through Git
-* Automate Kubernetes deployments
+A simple portfolio website is:
+
+1. Developed and maintained in Git
+2. Containerized using Docker
+3. Built automatically using GitHub Actions
+4. Security scanned using Trivy
+5. Published to GitHub Container Registry (GHCR)
+6. Delivered through a GitOps repository
+7. Deployed automatically by FluxCD
+8. Running inside Kubernetes
+
+This repository focuses on the **application layer and CI/CD pipeline**.
 
 ---
 
-# Project Architecture
+## Related Repository
+
+This project uses two repositories.
+
+### Application Repository (Current Repository)
+
+```text
+crchiran/crchiran-portfolio
+```
+
+Responsibilities:
+
+* Application source code
+* Docker image creation
+* CI/CD pipeline
+* Security scanning
+* Container image publishing
+* GitOps repository updates
+
+### GitOps Repository
+
+```text
+crchiran/crchiran-portfolio-gitops
+```
+
+Responsibilities:
+
+* Kubernetes manifests
+* FluxCD configuration
+* Istio resources
+* TLS certificates
+* Monitoring stack
+* Application deployment
+
+---
+
+## End-to-End Deployment Flow
 
 ```text
 Developer
@@ -41,8 +83,8 @@ Application Repository
 GitHub Actions
     │
     ├── Build Docker Image
+    ├── Trivy Security Scan
     ├── Push Image to GHCR
-    ├── Run Trivy Scan
     └── Update GitOps Repository
                 │
                 ▼
@@ -56,277 +98,16 @@ FluxCD
 Kubernetes Cluster
                 │
                 ▼
-Running Application
+Portfolio Website
 ```
 
 ---
 
-# Repositories Used
+## How Deployment Works
 
-This project requires two repositories.
+### Step 1
 
-## 1. Application Repository
-
-Repository:
-
-```text
-crchiran/crchiran-portfolio
-```
-
-Contains:
-
-```text
-.
-├── .github
-│   └── workflows
-│       └── deploy.yaml
-├── crchiran-portfolio.html
-├── Dockerfile
-├── nginx.conf
-└── README.md
-```
-
-Responsibilities:
-
-```text
-Build Application
-Build Docker Image
-Push Image to GHCR
-Run Security Scan
-Update GitOps Repository
-```
-
----
-
-## 2. GitOps Repository
-
-Repository:
-
-```text
-crchiran/crchiran-portfolio-gitops
-```
-
-Contains:
-
-```text
-.
-├── apps
-│   ├── crchiran-portfolio
-│   │   ├── cert.yaml
-│   │   ├── deployment.yaml
-│   │   ├── gw.yaml
-│   │   ├── kustomization.yaml
-│   │   ├── sa.yaml
-│   │   ├── svc.yaml
-│   │   └── vs.yaml
-│   ├── monitoring
-│   │   ├── grafana-admin-secret.yaml
-│   │   ├── grafana-virtualservice.yaml
-│   │   ├── kube-prom-stack-helmrelease.yaml
-│   │   ├── kustomization.yaml
-│   │   ├── loki-helmrelease.yaml
-│   │   ├── loki-memberlist-svc.yaml
-│   │   ├── loki-repo.yaml
-│   │   ├── monitoring-gateway.yaml
-│   │   ├── monitoring-repo.yaml
-│   │   ├── namespace.yaml
-│   │   └── promtail-helmrelease.yaml
-│   └── todo
-│       ├── cert.yaml
-│       ├── gw.yaml
-│       ├── kustomization.yaml
-│       ├── ns.yaml
-│       ├── svc.yaml
-│       ├── todo-deployment.yaml
-│       └── vs.yaml
-├── clusters
-│   └── production
-│       ├── crchiran-portfolio-prod.yaml
-│       ├── flux-system
-│       │   ├── gotk-components.yaml
-│       │   ├── gotk-sync.yaml
-│       │   └── kustomization.yaml
-│       ├── monitoring.yaml
-│       └── todo.yaml
-└── README.md
-```
-
-Responsibilities:
-
-```text
-Kubernetes Manifests
-FluxCD Resources
-Environment Configuration
-Deployment Configuration
-```
-
----
-
-# Repository Structure
-
-```text
-.
-├── crchiran-portfolio.html
-├── Dockerfile
-└── nginx.conf
-```
-
----
-
-# File Description
-
-| File                            | Description                   |
-| ------------------------------- | ----------------------------- |
-| `crchiran-portfolio.html`       | Portfolio web page            |
-| `Dockerfile`                    | Builds the Docker image       |
-| `nginx.conf`                    | NGINX configuration           |
-| `.github/workflows/deploy.yaml` | GitHub Actions CI/CD pipeline |
-
----
-
-# Local Development
-
-## Build Docker Image
-
-```bash
-docker build -t crchiran-portfolio:latest .
-```
-
-## Run Container
-
-```bash
-docker run -d \
-  --name crchiran-portfolio \
-  -p 8080:8080 \
-  crchiran-portfolio:latest
-```
-
-Open:
-
-```text
-http://localhost:8080
-```
-
----
-
-# Container Registry
-
-Images are stored in:
-
-```text
-ghcr.io/crchiran/crchiran-portfolio
-```
-
-Example:
-
-```text
-ghcr.io/crchiran/crchiran-portfolio:prod-abc123
-```
-
----
-
-# GitHub Actions CI/CD Pipeline
-
-The GitHub Actions workflow automatically performs:
-
-```text
-Checkout Source Code
-        │
-        ▼
-Build Docker Image
-        │
-        ▼
-Push Image to GHCR
-        │
-        ▼
-Run Trivy Security Scan
-        │
-        ▼
-Update GitOps Repository
-        │
-        ▼
-Commit and Push Changes
-```
-
----
-
-# FluxCD Deployment
-
-## Prerequisites
-
-Install:
-
-* Kubernetes Cluster
-* kubectl
-* Flux CLI
-* Git
-
-Verify:
-
-```bash
-kubectl get nodes
-```
-
-```bash
-flux check --pre
-```
-
----
-
-## Install Flux CLI
-
-### macOS
-
-```bash
-brew install fluxcd/tap/flux
-```
-
-### Linux
-
-```bash
-curl -s https://fluxcd.io/install.sh | sudo bash
-```
-
----
-
-## Export GitHub Token
-
-Create a GitHub Personal Access Token for Flux bootstrap.
-
-Export:
-
-```bash
-export GITHUB_TOKEN=<github-personal-access-token>
-```
-
-Verify:
-
-```bash
-echo $GITHUB_TOKEN
-```
-
----
-
-## Bootstrap FluxCD
-
-```bash
-flux bootstrap github \
-  --owner=<github-username> \
-  --repository=<gitops-repository-name> \
-  --branch=main \
-  --path=clusters/production \
-  --personal=true \
-  --token-auth \
-  --network-policy=false
-```
-
----
-
-# Deployment Workflow
-
-## Step 1
-
-Developer updates code:
+Developer updates application code.
 
 ```bash
 git add .
@@ -336,22 +117,28 @@ git push origin main
 
 ---
 
-## Step 2
+### Step 2
 
 GitHub Actions automatically:
 
 ```text
 Build Docker Image
+        │
+        ▼
+Run Trivy Security Scan
+        │
+        ▼
 Push Image to GHCR
-Run Trivy Scan
+        │
+        ▼
 Update GitOps Repository
 ```
 
 ---
 
-## Step 3
+### Step 3
 
-GitOps Repository receives new image tag.
+The GitOps repository receives a new image tag.
 
 Example:
 
@@ -359,7 +146,7 @@ Before:
 
 ```yaml
 images:
-  - name: crchiran-portfolio
+  - name: ghcr.io/crchiran/crchiran-portfolio
     newTag: prod-old
 ```
 
@@ -367,137 +154,357 @@ After:
 
 ```yaml
 images:
-  - name: crchiran-portfolio
+  - name: ghcr.io/crchiran/crchiran-portfolio
     newTag: prod-new
 ```
 
 ---
 
-## Step 4
+### Step 4
 
-FluxCD detects changes.
-
-Verify:
-
-```bash
-flux get sources git -A
-```
-
-```bash
-flux get kustomizations -A
-```
+FluxCD detects the GitOps repository change.
 
 ---
 
-## Step 5
+### Step 5
 
-Kubernetes deploys the new version.
-
-Verify:
-
-```bash
-kubectl get deploy -n portfolio
-```
-
-```bash
-kubectl rollout status deployment/crchiran-portfolio -n portfolio
-```
+FluxCD synchronizes Kubernetes.
 
 ---
 
-# Verify Deployment
+### Step 6
 
-Check Flux:
+Kubernetes deploys the new application version automatically.
 
-```bash
-flux get all -A
-```
-
-Check Git sources:
-
-```bash
-flux get sources git -A
-```
-
-Check Kustomizations:
-
-```bash
-flux get kustomizations -A
-```
-
-Check application:
-
-```bash
-kubectl get pods -n portfolio
-kubectl get svc -n portfolio
-kubectl get deploy -n portfolio
-```
+No manual deployment actions are required.
 
 ---
 
-# Troubleshooting
-
-View Flux events:
-
-```bash
-flux events
-```
-
-View Flux logs:
-
-```bash
-kubectl logs -n flux-system deployment/source-controller
-kubectl logs -n flux-system deployment/kustomize-controller
-kubectl logs -n flux-system deployment/helm-controller
-kubectl logs -n flux-system deployment/notification-controller
-```
-
-Force synchronization:
-
-```bash
-flux reconcile source git flux-system
-```
-
-```bash
-flux reconcile kustomization flux-system
-```
-
----
-
-# Technologies Used
-
-* HTML
-* NGINX
-* Docker
-* GitHub Actions
-* GitHub Container Registry (GHCR)
-* Trivy
-* FluxCD
-* Kubernetes
-* GitOps
-
----
-
-# Learning Outcomes
-
-This project demonstrates:
-
-* Application containerization
-* CI/CD pipeline creation
-* Container image publishing
-* GitOps workflows
-* FluxCD deployments
-* Kubernetes automation
-* Production deployment patterns
-
----
-
-# Maintainer
-
-**Chandan Richard Chiran**
-
-GitHub:
+## Repository Structure
 
 ```text
-https://github.com/crchiran
+.
+├── Dockerfile
+├── README.md
+├── clusters
+│   └── production
+│       └── flux-system
+│           ├── gotk-components.yaml
+│           ├── gotk-sync.yaml
+│           └── kustomization.yaml
+├── crchiran-portfolio.html
+├── images
+│   └── profile-photo.jpg
+└── nginx.conf
 ```
+
+---
+
+## Components
+
+### Portfolio Website
+
+```text
+crchiran-portfolio.html
+```
+
+The static portfolio webpage.
+
+---
+
+### Profile Image
+
+```text
+images/profile-photo.jpg
+```
+
+Profile image displayed on the website.
+
+---
+
+### NGINX Configuration
+
+```text
+nginx.conf
+```
+
+NGINX configuration used to serve the application.
+
+---
+
+### Dockerfile
+
+```text
+Dockerfile
+```
+
+Container image definition.
+
+---
+
+### Flux Bootstrap Resources
+
+```text
+clusters/production/flux-system
+```
+
+FluxCD bootstrap manifests used during cluster initialization.
+
+---
+
+## Dockerfile
+
+```dockerfile
+FROM nginxinc/nginx-unprivileged:1.29-alpine
+
+COPY --chown=101:101 nginx.conf /etc/nginx/conf.d/default.conf
+COPY --chown=101:101 crchiran-portfolio.html /usr/share/nginx/html/index.html
+COPY --chown=101:101 images /usr/share/nginx/html/images
+
+EXPOSE 8080
+
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+### Why This Image?
+
+* Lightweight Alpine Linux image
+* Unprivileged NGINX container
+* Reduced attack surface
+* Production-oriented configuration
+* Kubernetes-friendly deployment
+
+---
+
+## Quick Start
+
+### Clone Repository
+
+```bash
+git clone https://github.com/crchiran/crchiran-portfolio.git
+
+cd crchiran-portfolio
+```
+
+---
+
+### Build Image
+
+```bash
+docker build -t crchiran-portfolio:latest .
+```
+
+Verify:
+
+```bash
+docker images
+```
+
+---
+
+### Run Container
+
+```bash
+docker run -d \
+  --name crchiran-portfolio \
+  -p 8080:8080 \
+  crchiran-portfolio:latest
+```
+
+Verify:
+
+```bash
+docker ps
+```
+
+---
+
+### Access Application
+
+Open:
+
+```text
+http://localhost:8080
+```
+
+Or verify:
+
+```bash
+curl http://localhost:8080
+```
+
+---
+
+### View Logs
+
+```bash
+docker logs -f crchiran-portfolio
+```
+
+---
+
+### Stop Container
+
+```bash
+docker stop crchiran-portfolio
+```
+
+Remove:
+
+```bash
+docker rm crchiran-portfolio
+```
+
+---
+
+## CI/CD Pipeline
+
+GitHub Actions automatically performs:
+
+```text
+Checkout Source Code
+        │
+        ▼
+Build Docker Image
+        │
+        ▼
+Run Trivy Scan
+        │
+        ▼
+Push Image to GHCR
+        │
+        ▼
+Update GitOps Repository
+        │
+        ▼
+Commit & Push Changes
+```
+
+Benefits:
+
+* Automated builds
+* Automated security scanning
+* Automated image publishing
+* Automated deployment updates
+* GitOps-driven releases
+
+---
+
+## Container Registry
+
+Images are automatically published to GitHub Container Registry.
+
+Repository:
+
+```text
+ghcr.io/crchiran/crchiran-portfolio
+```
+
+Example image tags:
+
+```text
+latest
+prod-a1b2c3d
+prod-7f9e3ab
+```
+
+Pull image:
+
+```bash
+docker pull ghcr.io/crchiran/crchiran-portfolio:latest
+```
+
+---
+
+## Security Scanning
+
+Container images are scanned using Trivy during the CI/CD pipeline.
+
+The scan helps identify:
+
+* Critical vulnerabilities
+* High vulnerabilities
+* Dependency issues
+* Container image risks
+
+This ensures validated images are delivered into Kubernetes environments.
+
+---
+
+## Deployment Verification
+
+Verify image availability:
+
+```bash
+docker pull ghcr.io/crchiran/crchiran-portfolio:latest
+```
+
+Verify workflow execution:
+
+```text
+GitHub
+└── Actions
+    └── Workflow Runs
+```
+
+Verify GitOps update:
+
+```text
+crchiran-portfolio-gitops
+└── Commit History
+```
+
+---
+
+## Technology Stack
+
+| Category           | Technology                       |
+| ------------------ | -------------------------------- |
+| Frontend           | HTML5                            |
+| Web Server         | NGINX                            |
+| Containerization   | Docker                           |
+| CI/CD              | GitHub Actions                   |
+| Container Registry | GitHub Container Registry (GHCR) |
+| Security           | Trivy                            |
+| GitOps             | FluxCD                           |
+| Orchestration      | Kubernetes                       |
+
+---
+
+## Learning Outcomes
+
+This project demonstrates practical implementation of:
+
+* Docker Containerization
+* NGINX Application Hosting
+* GitHub Actions CI/CD
+* Container Security Scanning
+* Container Image Publishing
+* GitHub Container Registry (GHCR)
+* GitOps Workflows
+* FluxCD Deployments
+* Kubernetes Application Delivery
+* Production-Inspired Deployment Practices
+
+---
+
+## Future Enhancements
+
+Potential improvements include:
+
+* Helm-based deployments
+* Multi-environment GitOps
+* Progressive delivery
+* Canary deployments
+* Prometheus monitoring
+* Grafana dashboards
+* Loki log aggregation
+* OpenTelemetry tracing
+* Policy enforcement with Kyverno
+* Runtime security with Falco
+
+---
+
+## License
+
+This project is provided for educational and demonstration purposes.
